@@ -5,7 +5,8 @@ function Navbar() {
   const { cartCount } = useCart();
   const { user } = useUser();
   const { pathname } = useLocation();
-  const isOrderingPage = pathname === "/menu" || pathname === "/cart";
+  const isOrderingPage =
+    pathname === "/menu" || pathname === "/cart" || pathname === "/logout";
 
   return (
     <header className="navbar">

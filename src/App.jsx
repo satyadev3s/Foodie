@@ -113,7 +113,10 @@ function CartProvider({ children }) {
 
 function getInitialUser() {
   try {
-    return JSON.parse(localStorage.getItem("foodieUser")) || null;
+    const user = JSON.parse(localStorage.getItem("foodieUser"));
+    const account = JSON.parse(localStorage.getItem("foodieAccount"));
+
+    return account && user && account.email === user.email ? user : null;
   } catch {
     return null;
   }
@@ -128,17 +131,39 @@ function UserProvider({ children }) {
       email: userData.email,
       mobile: userData.mobile
     };
+    const account = { ...newUser, password: userData.password };
+
+    localStorage.setItem("foodieAccount", JSON.stringify(account));
     localStorage.setItem("foodieUser", JSON.stringify(newUser));
     setUser(newUser);
   };
 
   const loginUser = (userData) => {
+    let account;
+
+    try {
+      account = JSON.parse(localStorage.getItem("foodieAccount"));
+    } catch {
+      account = null;
+    }
+
+    if (
+      !account ||
+      account.email.toLowerCase() !== userData.email.trim().toLowerCase() ||
+      account.password !== userData.password
+    ) {
+      return false;
+    }
+
     const loggedInUser = {
-      name: userData.email.split("@")[0] || "Foodie Guest",
-      email: userData.email
+      name: account.name,
+      email: account.email,
+      mobile: account.mobile
     };
+
     localStorage.setItem("foodieUser", JSON.stringify(loggedInUser));
     setUser(loggedInUser);
+    return true;
   };
 
   const logoutUser = () => {

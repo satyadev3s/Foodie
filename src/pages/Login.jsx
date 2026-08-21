@@ -26,7 +26,11 @@ function Login() {
       return;
     }
 
-    loginUser(formData);
+    if (!loginUser(formData)) {
+      setError("No matching registered account was found. Please register first.");
+      return;
+    }
+
     navigate("/menu");
   };
 
